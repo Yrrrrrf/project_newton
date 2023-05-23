@@ -29,7 +29,6 @@ class App:
     # display_surface: pygame.Surface = pygame.display.set_mode((Config.WIDTH.value, Config.HEIGHT.value), pygame.RESIZABLE)
     theme = Theme.DEBUG
     running: bool = True
-    play: bool = True
     # clock: pygame.time.Clock = pygame.time.Clock()
 
     def __init__(self):
@@ -44,7 +43,6 @@ class App:
         self.clock: pygame.time.Clock = pygame.time.Clock()
 
 
-
     def run(self) -> None:
         """c
         Pop up the window and run the app while the user doesn't close the window
@@ -57,19 +55,7 @@ class App:
         # while True
             dt: float = self.clock.tick() / 1000.0  # get the time in seconds since the last tick
             # self.clock.tick(144)  # set the fps to 144
-            
-            # self.event_loop()  # handle events
-
             self.editor.run(dt)  # run editor
 
             pygame.display.update()  # update display_surface
-            # if self.play:  # if the game is running
-            #     match ("TSP"):  # switch statement                    
-            #         case "TSP":
-            #             # use flip instead of update to avoid flickering
-            #             pygame.display.flip()  # update display_surface
-
-            #         case _:  # Any other case
-            #             print(f"\033[91mAny other case\033[0m")
-
         # ? End of test code -------------------------------------------------------------------------
