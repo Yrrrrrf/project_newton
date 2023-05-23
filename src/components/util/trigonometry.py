@@ -5,12 +5,8 @@ These functions draw components on the screen surface
 '''
 
 import math
-import sys
 import pygame
-from dataclasses import dataclass
-
-from config.globals import Config, Assets
-from components.ui.origin_menu import OriginMenu
+from components.util.linear_algebra import  draw_arrow
 
 
 def draw_rectangular_components(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
@@ -18,74 +14,76 @@ def draw_rectangular_components(display_surface: pygame.Surface, origin: tuple[i
     Draw the rectangular components of a given Vector on the screen surface
     """
     # draw an arc that represents the angle of the vector
-    arc_size: int = 16
-    pygame.draw.arc(display_surface, (0, 0, 0), (origin[0] - arc_size, origin[1] - arc_size, arc_size * 2, arc_size * 2), 0, 2*math.pi - get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1])), 1)
+    sin_color: tuple[int, int, int] = (  0, 255,   0)  # blue
+    cos_color: tuple[int, int, int] = (255,   0,   0)  # red
+
+    tan_color: tuple[int, int, int] = (  0,   0, 255)  # green
+    sec_color: tuple[int, int, int] = (255, 255,   0)  # yellow
+
+    csc_color: tuple[int, int, int] = (  0, 255, 255)  # cyan
+    cot_color: tuple[int, int, int] = (255,   0, 255)  # magenta
+    
 
     draw_phantom_line(display_surface, origin, vector)  # draw the phantom line
     draw_arrow(display_surface, (0, 0, 0), origin, (origin[0] + vector[0], origin[1] + vector[1]))  # draw the vector
 
-    draw_alpha(display_surface, origin, vector)  # draw the polar components
+    draw_alpha(display_surface, origin, vector, (127, 127, 127))  # draw the polar components
 
-    # draw_sin(display_surface, origin, vector)  # draw the sin component
-    # draw_cos(display_surface, origin, vector)  # draw the cos component
+    draw_sin(display_surface, origin, vector, sin_color)  # draw the sin component
+    draw_cos(display_surface, origin, vector, cos_color)  # draw the cos component
     # draw_sin_cos_identity(display_surface, origin, vector)  # draw the pythagorean identity
 
-    # draw_tan(display_surface, origin, vector)  # draw the tan component
-    # draw_sec(display_surface, origin, vector)  # draw the tan component
+    draw_tan(display_surface, origin, vector, tan_color)  # draw the tan component
+    draw_sec(display_surface, origin, vector, sec_color)  # draw the tan component
     # draw_tan_sec_identity(display_surface, origin, vector)  # draw the pythagorean identity
 
-    draw_cot(display_surface, origin, vector)  # draw the tan component
-    draw_csc(display_surface, origin, vector)  # draw the tan component
-    draw_cot_csc_identity(display_surface, origin, vector)  # draw the pythagorean identity
+    draw_cot(display_surface, origin, vector, cot_color)  # draw the tan component
+    draw_csc(display_surface, origin, vector, csc_color)  # draw the tan component
+    # draw_cot_csc_identity(display_surface, origin, vector)  # draw the pythagorean identity
 
 
 def draw_phantom_line(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
     """
     Draw a phantom line in the same direction as the vector, but starting at the origin
     """
-    # get the angle of the vector
-    angle: float = get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1]))
-    # get the distance from the origin to the end of the vector
-    distance: float = get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
-    # get the point at the end of the vector
-    end: tuple[int, int] = get_point(origin, angle, distance*10)
-    # draw the phantom line
-    pygame.draw.line(display_surface, (127, 127, 127), origin, end, 1)
+    angle: float = get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1]))  # get the angle of the vector
+    distance: float = get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))  # get the distance from the origin to the end of the vector
+    end: tuple[int, int] = get_point(origin, angle, distance*10)  # get the point at the end of the vector
+    pygame.draw.line(display_surface, (127, 127, 127), origin, end, 1)  # draw the phantom line
 
 
-def draw_alpha(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
-    alpha_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"alpha = {math.degrees(2*math.pi - get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1]))):.2f}°", True, (0, 0, 0))  # create the text surface
-    display_surface.blit(alpha_text, (48, 40), alpha_text.get_rect())  # draw the text surface on the screen
+def draw_alpha(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
+    arc_size: int = 32
+    pygame.draw.arc(display_surface, (127, 127, 127), (origin[0] - arc_size, origin[1] - arc_size, arc_size * 2, arc_size * 2), 0, 2*math.pi - get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1])), 2)
+
+    theta_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"θ = {math.degrees(2*math.pi - get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1]))):.2f}°", True, (0, 0, 0))  # create the text surface
+    display_surface.blit(theta_text, (48, 40), theta_text.get_rect())  # draw the text surface on the screen
+
+    beta_text: pygame.Surface = pygame.font.SysFont("Cambria Math", 16).render(f"{math.degrees(2*math.pi - get_angle(origin, (origin[0] + vector[0], origin[1] + vector[1]))):.2f}°", True, (64, 64, 64))  # create the text surface
+    pos = (24, -24)
+    display_surface.blit(beta_text, (origin[0]+ pos[0], origin[1] + pos[1]- 16), beta_text.get_rect())  # draw the text surface on the screen
 
 
-def draw_sin(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
+
+
+def draw_sin(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
     """
     Draw the sin component of a given Vector on the screen surface
     """
-    if vector[0] == 0:
-        pygame.draw.line(display_surface, (0, 0, 255), (origin[0] + vector[0], origin[1]), (origin[0] + vector[0], origin[1] + vector[1]), 1)
-    else:
-        # draw the sin component
-        pygame.draw.line(display_surface, (0, 0, 255), (origin[0] + vector[0], origin[1]), (origin[0] + vector[0], origin[1] + vector[1]), 1)  # draw the y component
-        # draw the sin value (same as draw_alpha)
-        sin_value: float = -get_sin_component(origin, (origin[0] + vector[0], origin[1] + vector[1]))[0] / get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
-        sin_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"sin = {sin_value:8.4f}", True, (0, 0, 0))  # create the text surface
-        display_surface.blit(sin_text, (48, 64), sin_text.get_rect())  # draw the text surface on the screen
+    pygame.draw.line(display_surface, color, (origin[0] + vector[0], origin[1]), (origin[0] + vector[0], origin[1] + vector[1]), 2)  # draw the y component
+    sin_value: float = -get_sin_component(origin, (origin[0] + vector[0], origin[1] + vector[1]))[0] / get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
+    sin_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"sin = {sin_value:8.4f}", True, (0, 0, 0))  # create the text surface
+    display_surface.blit(sin_text, (48, 64), sin_text.get_rect())  # draw the text surface on the screen
 
 
-def draw_cos(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
+def draw_cos(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
     """
     Draw the cos component of a given Vector on the screen surface
     """
-    if vector[1] == 0:
-        pygame.draw.line(display_surface, (255, 0, 0), (origin[0], origin[1] + vector[1]), (origin[0] + vector[0], origin[1] + vector[1]), 1)
-    else:
-        # draw the cos component
-        pygame.draw.line(display_surface, (255, 0, 0), (origin[0], origin[1] + vector[1]), (origin[0] + vector[0], origin[1] + vector[1]), 1)  # draw the y component
-        # draw the cos value
-        cos_value: float = get_sin_component(origin, (origin[0] + vector[0], origin[1] + vector[1]))[1] / get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
-        cos_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"cos = {cos_value:8.4f}", True, (0, 0, 0))  # create the text surface
-        display_surface.blit(cos_text, (48, 80), cos_text.get_rect())  # draw the text surface on the screen
+    pygame.draw.line(display_surface, color, (origin[0], origin[1] + vector[1]), (origin[0] + vector[0], origin[1] + vector[1]), 2)  # draw the y component
+    cos_value: float = get_sin_component(origin, (origin[0] + vector[0], origin[1] + vector[1]))[1] / get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
+    cos_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"cos = {cos_value:8.4f}", True, (0, 0, 0))  # create the text surface
+    display_surface.blit(cos_text, (48, 80), cos_text.get_rect())  # draw the text surface on the screen
 
 
 def draw_sin_cos_identity(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
@@ -96,7 +94,7 @@ def draw_sin_cos_identity(display_surface: pygame.Surface, origin: tuple[int, in
     display_surface.blit(text, (48, 96), text.get_rect())  # draw the text surface on the screen
 
 
-def draw_tan(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
+def draw_tan(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
     """
     Draw the tan component of a given Vector on the screen surface
     """
@@ -105,19 +103,18 @@ def draw_tan(display_surface: pygame.Surface, origin: tuple[int, int], vector: t
         tan = -rect_components[0] / rect_components[1]
 
         distance: float = get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
-
         # if vector[0] > 0:  # draw this line only if the vector is on the right side of the origin
-        #     pygame.draw.line(display_surface, (255, 0, 255), (origin[0] + distance, origin[1]), (origin[0] + distance, origin[1] - distance*tan), 1)  # draw the y component
+        #     pygame.draw.line(display_surface, color, (origin[0] + distance, origin[1]), (origin[0] + distance, origin[1] - distance*tan), 1)  # draw the y component
         # else:  # otherwise draw it on the left side
-        #     pygame.draw.line(display_surface, (255, 0, 255), (origin[0] - distance, origin[1]), (origin[0] - distance, origin[1] + distance*tan), 1)  # draw the y component
+        #     pygame.draw.line(display_surface, ccolor, (origin[0] - distance, origin[1]), (origin[0] - distance, origin[1] + distance*tan), 1)  # draw the y component
 
-        pygame.draw.line(display_surface, (255, 0, 255), (origin[0] + vector[0], origin[1] + vector[1]), (origin[0] + distance * distance / get_sin_component(origin, (origin[0] + vector[0], origin[1] + vector[1]))[1], origin[1]), 1)  # draw the y component
+        pygame.draw.line(display_surface, color, (origin[0] + vector[0], origin[1] + vector[1]), (origin[0] + distance * distance / get_sin_component(origin, (origin[0] + vector[0], origin[1] + vector[1]))[1], origin[1]), 2)  # draw the y component
 
         tan_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"tan = {tan:8.4f}", True, (0, 0, 0))  # create the text surface
         display_surface.blit(tan_text, (48, 112), tan_text.get_rect())  # draw the text surface on the screen
 
 
-def draw_sec(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
+def draw_sec(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
     """
     Draw the sec component of a given Vector on the screen surface
     """
@@ -127,12 +124,12 @@ def draw_sec(display_surface: pygame.Surface, origin: tuple[int, int], vector: t
         sec: float = distance / rect_components[1]
         tan: float = -rect_components[0] / rect_components[1]
 
-        if vector[0] > 0:  # draw this line only if the vector is on the right side of the origin
-            pygame.draw.line(display_surface, (255, 255, 0), origin, (origin[0] + distance, origin[1] - distance*tan), 1)  # draw the y component
-        else:  # otherwise draw it on the left side
-            pygame.draw.line(display_surface, (255, 255, 0), origin, (origin[0] - distance, origin[1] + distance*tan), 1)  # draw the y component
+        # if vector[0] > 0:  # draw this line only if the vector is on the right side of the origin
+        #     pygame.draw.line(display_surface, color, origin, (origin[0] + distance, origin[1] - distance*tan), 1)  # draw the y component
+        # else:  # otherwise draw it on the left side
+        #     pygame.draw.line(display_surface, color, origin, (origin[0] - distance, origin[1] + distance*tan), 1)  # draw the y component
 
-        pygame.draw.line(display_surface, (255, 255, 0), origin, (origin[0] + distance * sec, origin[1]), 1)  # draw the y component
+        pygame.draw.line(display_surface, color, origin, (origin[0] + distance * sec, origin[1]), 2)  # draw the y component
 
         sec_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"sec = {sec:8.4f}", True, (0, 0, 0))  # create the text surface
         display_surface.blit(sec_text, (48, 128), sec_text.get_rect())  # draw the text surface on the screen
@@ -148,7 +145,7 @@ def draw_tan_sec_identity(display_surface: pygame.Surface, origin: tuple[int, in
         display_surface.blit(text, (48, 144), text.get_rect())  # draw the text surface on the screen
 
 
-def draw_cot(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
+def draw_cot(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
     """
     Draw the cot component of a given Vector on the screen surface
     """
@@ -156,13 +153,14 @@ def draw_cot(display_surface: pygame.Surface, origin: tuple[int, int], vector: t
     if rect_components[0] != 0:  # if the vector is not horizontal
         distance: float = get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
         csc: float = distance / rect_components[0]
-        pygame.draw.line(display_surface, (255, 255, 0), (origin[0] + vector[0], origin[1] + vector[1]), (origin[0], origin[1] + distance * csc), 1)  # draw the x component
+
+        pygame.draw.line(display_surface, color, (origin[0] + vector[0], origin[1] + vector[1]), (origin[0], origin[1] + distance * csc), 2)  # draw the x component
 
         cot_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"cot = {-rect_components[1] / rect_components[0]:8.4f}", True, (0, 0, 0))  # create the text surface
         display_surface.blit(cot_text, (48, 160), cot_text.get_rect())  # draw the text surface on the screen
 
 
-def draw_csc(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int]) -> None:
+def draw_csc(display_surface: pygame.Surface, origin: tuple[int, int], vector: tuple[int, int], color: tuple[int, int, int] = (0, 0, 0)) -> None:
     """
     Draw the csc component of a given Vector on the screen surface
     """
@@ -171,7 +169,7 @@ def draw_csc(display_surface: pygame.Surface, origin: tuple[int, int], vector: t
         distance: float = get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1]))
         csc: float = distance / -rect_components[0]
 
-        pygame.draw.line(display_surface, (0, 255, 255), origin, (origin[0], origin[1] - distance * csc), 1)  # draw the x component
+        pygame.draw.line(display_surface, color, origin, (origin[0], origin[1] - distance * csc), 2)  # draw the x component
 
         csc_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"csc = {csc:8.4f}", True, (0, 0, 0))  # create the text surface
         display_surface.blit(csc_text, (48, 176), csc_text.get_rect())  # draw the text surface on the screen
@@ -184,52 +182,6 @@ def draw_cot_csc_identity(display_surface: pygame.Surface, origin: tuple[int, in
         csc: float =  get_distance(origin, (origin[0] + vector[0], origin[1] + vector[1])) / rect_components[0]
         text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"{cot**2:.4f} + {1} = {csc**2:.4f}", True, (0, 0, 0))  # create the text surface
         display_surface.blit(text, (48, 192), text.get_rect())  # draw the text surface on the screen
-
-
-def draw_dotted_line(display_surface: pygame.Surface, color: tuple[int, int, int], start: tuple[int, int], end: tuple[int, int], dot_size: int = 8) -> None:
-    """
-    Draw a dotted line on the screen from the start point to the end point
-
-    ### Parameters:
-    - `display_surface`: The surface on which the line will be drawn
-    - `color`: The color of the line
-    - `start`: The start point of the line
-    - `end`: The end point of the line
-    """
-    pygame.draw.line(display_surface, color, start, end, 1)  # draw the segment
-    points: list[tuple[int, int]] = []
-    if end[0] > 0:  # if the line is not vertical
-        slope: float = end[1] / end[0]
-        # print(slope)
-        # y_intercept: float = start[1] - slope * start[0]  # calculate the y intercept of the line (b)
-    else:  # if the line is vertical
-        # get the other slope
-        slope: float = end[0] / end[1]
-
-    for x in range(int(start[0]), int(start[0] + end[0]), 20):  # get 20 points on the line (for 10 lines)
-        # y: int = int(slope * x + y_intercept)
-        y: int = int(slope * x + start[1] - slope * start[0])
-        points.append((x, y))  # add the point to the list
-        # points.append((x + 8 * math.cos(math.atan(slope)), y + 8 * math.sin(math.atan(slope))))  # add the end of the line to the list
-
-    # draw the lines between the points
-    for i in range(1, len(points), 2):
-        pygame.draw.line(display_surface, color, points[i-1], points[i], 1)  # draw the segment
-
-
-def draw_arrow(surface: pygame.Surface, color: tuple[int, int, int], start: tuple[int, int], end: tuple[int, int], arrow_size: int = 16):
-    """
-    Draw an arrow on the screen from the start point to the end point
-    """
-    pygame.draw.line(surface, color, start, end, 2)  # draw the line
-
-    angle = math.atan2(end[1] - start[1], end[0] - start[0])
-    arrow_angle: float = math.pi / 12  # angle of the arrow head (15 degrees)
-    left_side = (end[0] - arrow_size * math.cos(angle + arrow_angle), end[1] - arrow_size * math.sin(angle + arrow_angle))
-    right_side = (end[0] - arrow_size * math.cos(angle - arrow_angle), end[1] - arrow_size * math.sin(angle - arrow_angle))
-    # now draw the arrow head on top of the line
-    pygame.draw.polygon(surface, color, [end, left_side, right_side])
-
 
 
 # ? TRIGONOMETRY FUNCTIONS --------------------------------------------------------------------------------------------
@@ -304,3 +256,14 @@ def polar_to_rect(polar: tuple[float, float]) -> tuple[int, int]:
     vector: tuple[int, int] = (int(polar[1] * math.cos(polar[0])), int(polar[1] * math.sin(polar[0])))
     return vector
 
+
+# pending Pythagorean identities:
+# sin² + cos² = 1    done
+# tan² + 1 = sec²    done
+# cot² + 1 = csc²    done
+
+# (tan + cot)² = sec² * csc²
+# (tan - cot)² = sec² * csc² - 4
+
+# (sin + cos)² = 1 + 2 * sin * cos
+# (sin - cos)² = 1 - 2 * sin * cos

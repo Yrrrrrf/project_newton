@@ -24,7 +24,7 @@ class OriginMenu:
         self.update_rect()  # update the size of the surface
         # create the buttons of the origin menu
         button_paths: list[str] = ["axis.png", "rotation.png", "search.png", "size.png"]
-        button_functions: list[callable] = [
+        button_functions: list[callable] = [ # type: ignore
             print("Clicked"),
             print("Clicked"),
             print("Clicked"),
@@ -84,7 +84,7 @@ class Button(pygame.sprite.Sprite):
     Button class
     This class represents a button in the GUI
     """
-    def __init__(self, rect: pygame.Rect, function: callable, img_path: str, group: pygame.sprite.Group):
+    def __init__(self, rect: pygame.Rect, function: callable, img_path: str, group: pygame.sprite.Group): # type: ignore
         super().__init__(group)
         self.image: pygame.Surface = pygame.Surface(rect.size)  # create a surface for the button
         self.rect = rect

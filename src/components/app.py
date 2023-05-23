@@ -42,6 +42,14 @@ class App:
         print(f"\033[94mApp Running\033[0m")
         self.clock: pygame.time.Clock = pygame.time.Clock()
 
+        # SET ALWAYS ON TOP
+        if sys.platform == "win32":
+            import win32gui, win32con
+            hwnd = win32gui.GetForegroundWindow()
+            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+                                    win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+            
+
 
     def run(self) -> None:
         """c
@@ -54,8 +62,9 @@ class App:
         while self.running:  # while the app is running
         # while True
             dt: float = self.clock.tick() / 1000.0  # get the time in seconds since the last tick
-            # self.clock.tick(144)  # set the fps to 144
+            self.clock.tick(144)  # set the fps to 144
             self.editor.run(dt)  # run editor
-
+            # show fps on screen
+            
             pygame.display.update()  # update display_surface
         # ? End of test code -------------------------------------------------------------------------

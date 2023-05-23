@@ -5,10 +5,13 @@ from pygame.math import Vector2 as vector
 import sys
 import pygame
 from dataclasses import dataclass
+from components.util.unit_circle import UnitCircle
 
 from config.globals import Config, Assets
 from components.ui.origin_menu import OriginMenu
-from components.util.trigonometry import draw_rectangular_components, draw_arrow
+from components.util.trigonometry import draw_rectangular_components
+from components.util.linear_algebra import  draw_arrow
+from components.ui.text_input import TextInput
 
 
 @dataclass
@@ -62,6 +65,7 @@ class Editor:
             self.print_pixel_data(event)
             self.menu_click(event)
 
+            self.user_input(event)  # handle user input
 
     def pan_input(self, event):
         """
@@ -190,8 +194,8 @@ class Editor:
         # self.display_surface.fill('white')  # fill the screen with white
         self.display_surface.fill((220, 220, 220))  # fill the screen with white
         self.draw_grid()  # draw grid
-        # self.draw_axes_lines(colored=False)  # draw axes
-        self.draw_axes_lines(colored=True)  # draw axes
+        self.draw_axes_lines(colored=False)  # draw axes
+        # self.draw_axes_lines(colored=True)  # draw axes
         self.draw_numbers_on_grid()  # draw numbers on grid
         # self.draw_ucs()  # draw user coordinate system
 
@@ -204,12 +208,42 @@ class Editor:
         test_vector.scale_to_length(self.grid_size)
 
 
-        draw_rectangular_components(self.display_surface, (int(self.origin.x), int(self.origin.y)), (int(test_vector.x), int(test_vector.y)))
+        unit_circle: UnitCircle = UnitCircle(self.display_surface, self.origin, radius=self.grid_size, rect_components=(int(test_vector.x), int(test_vector.y)))  # type: ignore
+        unit_circle.draw()  # draw the unit circle
 
-        # draw_rectangular_components(self.display_surface, (self.origin.x, self.origin.y), (self.origin.x, self.origin.y))
-
+        # draw_rectangular_components(self.display_surface, (int(self.origin.x), int(self.origin.y)), (int(test_vector.x), int(test_vector.y)))
 
         # pygame.draw.circle(self.display_surface, (0, 0, 0), self.origin, 8, 1)  # draw origin point
-        pygame.draw.circle(self.display_surface, (0, 0, 0), self.origin, self.grid_size, 1)  # draw origin point
+        # pygame.draw.circle(self.display_surface, (0, 0, 0), self.origin, self.grid_size, 2)  # draw origin point
+        self.draw_fps(dt)  # draw fps on screen
 
         self.origin_menu.display()  # display origin menu
+
+
+
+    def draw_fps(self, dt: float) -> None:
+        """
+        Draw the fps on the screen
+        """
+        fps = 1 / dt  # calculate the fps
+        self.display_surface.blit(
+            pygame.font.SysFont("Consolas", 16).render(
+                f"{fps:3.0f} FPS", True, (63, 63, 63)),  # render the number (true means that the text is anti-aliased)
+            (0, 0)  # position of the text
+        )
+
+
+    def user_input(self, event: pygame.event.Event):
+        """
+        Handle user input
+        """
+        if event.type == pygame.KEYDOWN:  # check if a key is pressed
+            if event.key == pygame.K_ESCAPE:  # check if the key is the escape key
+                pygame.quit()  # quit pygame
+                sys.exit()  # exit the program
+
+            text_input = TextInput()
+            text_input.render_text(event)
+
+
+    
