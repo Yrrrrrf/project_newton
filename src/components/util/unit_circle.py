@@ -34,12 +34,12 @@ class UnitCircle:
         self.draw_phantom_line()
         self.draw_tetha() 
 
-        # self.draw_sin(color="green")
-        # self.draw_cos(color="red")
-        self.draw_tan(color="cyan")
-        self.draw_sec(color="magenta")
-        self.draw_csc(color="blue")
-        self.draw_cot(color="yellow")
+        self.draw_sin(color="green")
+        self.draw_cos(color="red")
+        # self.draw_tan(color="cyan")
+        # self.draw_sec(color="magenta")
+        # self.draw_csc(color="blue")
+        # self.draw_cot(color="yellow")
 
 
     def draw_phantom_line(self):
@@ -114,7 +114,7 @@ class UnitCircle:
 
             pygame.draw.line(self.display_surface, color, self.origin, (self.origin[0] + distance * sec, self.origin[1]), 2)  # draw the y component
 
-            sec_text: pygame.Surface = pygame.font.SysFont("Consolas", 16).render(f"sec = {sec:8.4f}", True, color)  # create the text surface
+            sec_text: pygame.Surface = pygame.font.SysFont("Consolrect_components[1SELF.]as", 16).render(f"sec = {sec:8.4f}", True, color)  # create the text surface
             self.display_surface.blit(sec_text, (48, 128), sec_text.get_rect())  # draw the text surface on the screen
 
  

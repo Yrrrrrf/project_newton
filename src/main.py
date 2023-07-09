@@ -22,12 +22,12 @@ def main() -> None:
     """
     # Once created, the app will run until the user closes the window
     app: App = App()  # create app instance
-    app.run()  # run app
+    app.run() # run app
 
 
 if __name__ == "__main__":
     """
-    This is the entry point of the application.
+    This is the entry point of the application.m
     Clean the terminal and print app data before running the main function.
     """
     # print("\033[2J\033[1;1H", end="")  # clear terminal
@@ -35,3 +35,4 @@ if __name__ == "__main__":
     # print(f"\033[97m{Config.VERSION.value}\033[0m", end="\n\n")  # print version in white
 
     main()  # run main function
+

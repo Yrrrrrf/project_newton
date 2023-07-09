@@ -43,16 +43,16 @@ class App:
         self.clock: pygame.time.Clock = pygame.time.Clock()
 
         # SET ALWAYS ON TOP
-        if sys.platform == "win32":
-            import win32gui, win32con
-            hwnd = win32gui.GetForegroundWindow()
-            win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
-                                    win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
+        # if sys.platform == "win32":
+        #     import win32gui, win32con
+        #     hwnd = win32gui.GetForegroundWindow()
+        #     win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+        #                             win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
             
 
 
     def run(self) -> None:
-        """c
+        """
         Pop up the window and run the app while the user doesn't close the window
         """
         # [pygame.draw.circle(self.display_surface, (0, 255, 0), point, 5) for point in [(random.randint(0, Config.WIDTH.value), random.randint(0, Config.HEIGHT.value)) for _ in range(5)]]

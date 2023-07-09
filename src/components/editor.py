@@ -64,7 +64,6 @@ class Editor:
             self.pan_input(event)
             self.print_pixel_data(event)
             self.menu_click(event)
-
             self.user_input(event)  # handle user input
 
     def pan_input(self, event):
@@ -199,26 +198,14 @@ class Editor:
         self.draw_numbers_on_grid()  # draw numbers on grid
         # self.draw_ucs()  # draw user coordinate system
 
-        # draw the rectangular components of the vector
-        # test_vector = vector(self.grid_size, -self.grid_size) *3
-        # make the vector to point to the mouse position
-
         test_vector = vector(pygame.mouse.get_pos()) - self.origin
-        # make the test vector to be lenght of 1
         test_vector.scale_to_length(self.grid_size)
-
 
         unit_circle: UnitCircle = UnitCircle(self.display_surface, self.origin, radius=self.grid_size, rect_components=(int(test_vector.x), int(test_vector.y)))  # type: ignore
         unit_circle.draw()  # draw the unit circle
 
-        # draw_rectangular_components(self.display_surface, (int(self.origin.x), int(self.origin.y)), (int(test_vector.x), int(test_vector.y)))
-
-        # pygame.draw.circle(self.display_surface, (0, 0, 0), self.origin, 8, 1)  # draw origin point
-        # pygame.draw.circle(self.display_surface, (0, 0, 0), self.origin, self.grid_size, 2)  # draw origin point
         self.draw_fps(dt)  # draw fps on screen
-
         self.origin_menu.display()  # display origin menu
-
 
 
     def draw_fps(self, dt: float) -> None:
@@ -238,12 +225,12 @@ class Editor:
         Handle user input
         """
         if event.type == pygame.KEYDOWN:  # check if a key is pressed
+            text_input = TextInput()
+            text_input.user_input += event.unicode
+            print(text_input.user_input)
+            text_input.render_text(event)
+
             if event.key == pygame.K_ESCAPE:  # check if the key is the escape key
                 pygame.quit()  # quit pygame
                 sys.exit()  # exit the program
 
-            text_input = TextInput()
-            text_input.render_text(event)
-
-
-    

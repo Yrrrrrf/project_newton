@@ -7,8 +7,6 @@ import pygame
 from config.globals import Assets
 
 
-
-
 # 1. Create a new text font
 # 2. Render the text (get user input)
 # 3. Create a new text surface
@@ -20,10 +18,10 @@ class TextInput:
     
     Attributes
     """
-    def __init__(self,): 
-        self.display_surface: pygame.Surface = pygame.display.get_surface()
+    def __init__(self): 
+        self.display_surface: pygame.Surface = pygame.display.set_mode((800, 600))  # create a new display surface
         self.base_font: pygame.font.Font = pygame.font.SysFont("Consolas", 16)  # create a new font
-        self.user_input: str = "sdasdsdsad"  # user input
+        self.user_input: str = ""  # user input
 
 
 
@@ -36,6 +34,7 @@ class TextInput:
         text_surface: pygame.Surface = self.base_font.render(self.user_input, True, (255, 255, 255))  # create a new text surface
         text_rect: pygame.Rect = text_surface.get_rect()  # create a new rect
         text_rect.center = (self.display_surface.get_width() // 2, self.display_surface.get_height() // 2)  # center the rect
+
         self.display_surface.blit(text_surface, text_rect)  # draw the text
 
     

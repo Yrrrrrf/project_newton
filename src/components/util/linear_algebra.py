@@ -24,12 +24,6 @@ class Vector:
         pygame.draw.line(surface, color, start, end, 2)
 
 
-
-
-
-
-
-
 # ? useful functions ------------------------------------------------------------------------------------
 
 def draw_arrow(surface: pygame.Surface, color: tuple[int, int, int], start: tuple[int, int], end: tuple[int, int], arrow_size: int = 16):
