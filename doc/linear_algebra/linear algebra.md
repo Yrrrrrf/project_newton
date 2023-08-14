@@ -12,7 +12,12 @@ It is a very important branch of mathematics because it is used in many fields o
 
 It provides a compact form for expressing and manipulating data.
 
-## Vectors
+Most of the times in Linear Algebra we are dealing with scalars, vectors and matrices.
+- Scalars are represented by lower case letters or Greek letters. $\alpha, \beta, \gamma, \lambda$
+- Vectors are represented by lower case letters with an arrow on top. $\vec{a}, \vec{b}, \vec{c}$
+- Matrices are represented by upper case letters. $A, B, C$
+
+## [Vectors](./vector.ipynb)
 
 A vector is a quantity that has magnitude and direction. It is represented by a line with an arrow at the end. The arrow indicates the direction of the vector and the length of the line indicates the magnitude of the vector.
 

@@ -3,8 +3,6 @@
 #? Imports ------------------------------------------------------------------------------------
 
 # Python imports
-import sys
-from threading import Thread
 import pygame
 import random
 import time

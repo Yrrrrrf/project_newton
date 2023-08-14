@@ -22,7 +22,6 @@ class Editor:
     """
     pan_active: bool = False  # if the user is panning
 
-
     # App data (App State)
     display_surface: pygame.Surface = pygame.display.get_surface()
     # support_line_surface: pygame.Surface  # !this not
@@ -46,7 +45,6 @@ class Editor:
         self.grid_size = 88  # size of the grid
         self.grid_size = 255  # size of the grid
         self.support_line_surface = pygame.Surface(self.display_surface.get_size())  # create a surface for the grid
-        # self.support_line_surface = pygame.Surface(self.display_surface.get_size(), c  # create a surface for the grid
         self.support_line_surface.set_colorkey("green")  # set the colorkey of the surface (the colorkey is the color that is considered transparent)
         self.support_line_surface.set_alpha(32)  # set the transparency of the surface (0 is transparent and 255 is opaque)
 
@@ -65,6 +63,7 @@ class Editor:
             self.print_pixel_data(event)
             self.menu_click(event)
             self.user_input(event)  # handle user input
+
 
     def pan_input(self, event):
         """
@@ -190,6 +189,9 @@ class Editor:
         pygame.display.set_caption(f"{Config.NAME.value} {Config.VERSION.value} (Editor Mode)")  # set the window title 
         self.event_loop()  # handle events
 
+        # ? Draw --------------------------------------------------------------------------------------
+        
+        # ? Grid
         # self.display_surface.fill('white')  # fill the screen with white
         self.display_surface.fill((220, 220, 220))  # fill the screen with white
         self.draw_grid()  # draw grid
@@ -198,14 +200,20 @@ class Editor:
         self.draw_numbers_on_grid()  # draw numbers on grid
         # self.draw_ucs()  # draw user coordinate system
 
+        # ? App menu (debug)
+        self.draw_fps(dt)  # draw fps on screen
+        # self.origin_menu.display()  # display origin menu
+
+
+        # ? Plot... 
+        # test vector is the vector that goes from the origin to the mouse position
         test_vector = vector(pygame.mouse.get_pos()) - self.origin
         test_vector.scale_to_length(self.grid_size)
-
+        
+        # ? Unit circle
         unit_circle: UnitCircle = UnitCircle(self.display_surface, self.origin, radius=self.grid_size, rect_components=(int(test_vector.x), int(test_vector.y)))  # type: ignore
         unit_circle.draw()  # draw the unit circle
 
-        self.draw_fps(dt)  # draw fps on screen
-        self.origin_menu.display()  # display origin menu
 
 
     def draw_fps(self, dt: float) -> None:

@@ -24,8 +24,6 @@ class TextInput:
         self.user_input: str = ""  # user input
 
 
-
-        
     # def render_text(self, event: pygame.event.Event):
     def render_text(self, event):
         """
